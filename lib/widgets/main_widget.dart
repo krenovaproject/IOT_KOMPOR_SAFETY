@@ -76,8 +76,15 @@ class MainWidget {
     );
   }
 
-  ToastificationItem showTheToast(String title, String content, BuildContext context) {
-    return toastification.show(context: context, title: Text(title), description: Text(content), style: ToastificationStyle.flat, autoCloseDuration: const Duration(seconds: 2), showProgressBar: false);
+  ToastificationItem showTheToast(
+      String title, String content, BuildContext context) {
+    return toastification.show(
+        context: context,
+        title: Text(title),
+        description: Text(content),
+        style: ToastificationStyle.flat,
+        autoCloseDuration: const Duration(seconds: 3),
+        showProgressBar: false);
   }
 
   Widget formEdit(TextEditingController controller, IconData icon, String param,
@@ -101,8 +108,8 @@ class MainWidget {
     );
   }
 
-  Widget statusCard(
-      Size size, String upperText, String downText, VoidCallback cb, Widget asst, Color color, Widget righB) {
+  Widget statusCard(Size size, String upperText, String downText,
+      VoidCallback cb, Widget asst, Color color, Widget righB) {
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: size.height * 0.002,
@@ -119,7 +126,6 @@ class MainWidget {
             child: Stack(
               children: [
                 asst,
-                
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: size.height * 0.02,
@@ -128,12 +134,13 @@ class MainWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(upperText, style: TextStyle(
-                        fontSize: size.height * 0.03,
-                        fontWeight: FontWeight.w600,
-                        color: const Color.fromARGB(255, 246, 246, 246)
-                      ),
-                      maxLines: 3,
+                      Text(
+                        upperText,
+                        style: TextStyle(
+                            fontSize: size.height * 0.03,
+                            fontWeight: FontWeight.w600,
+                            color: const Color.fromARGB(255, 246, 246, 246)),
+                        maxLines: 3,
                       ),
                       righB
                     ],
