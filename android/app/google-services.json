@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "11558714996",
+    "firebase_url": "https://safetystove-3ff9e-default-rtdb.firebaseio.com/",
+    "project_id": "safetystove-3ff9e",
+    "storage_bucket": "safetystove-3ff9e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11558714996:android:3a4e8854807c2c438cdb21",
+        "android_client_info": {
+          "package_name": "com.example.kompor_safety"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe2mnuFS3LYJ4XJm1400D2rs4gSuM0D8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
