@@ -7,6 +7,7 @@ import 'package:kompor_safety/presenter/fire_presenter.dart';
 
 class ButtonWidget {
   List<String> stringDrpdown = [
+    "1 minutes",
     "5 minutes",
     "10 minutes",
     "15 minutes",
@@ -115,7 +116,7 @@ class ButtonWidget {
         onChanged: (String? value) {
           if (value != null) {
             fireService.fireFunction.updateTimerOff(
-                red.read(tempNotifier.notifier).fetchSerialNumber(), value);
+                red.read(tempNotifier.notifier).fetchSerialNumber(), fireService.fireFunction.getStringToInt(value));
             red.read(timeState.notifier).state = value;
           } else {
             print('');

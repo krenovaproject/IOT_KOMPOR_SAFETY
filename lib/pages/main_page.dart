@@ -238,7 +238,7 @@ class MainPage extends ConsumerWidget {
                                   Container(
                                     color: Colors.white,
                                     child: widgetUsed.buttonWidgets
-                                        .dropDownWidget(size, ref, datas.timeOff),
+                                        .dropDownWidget(size, ref, fireContent.fireFunction.fetchToString(datas.timeOff)),
                                   ),
                                 ],
                               )),

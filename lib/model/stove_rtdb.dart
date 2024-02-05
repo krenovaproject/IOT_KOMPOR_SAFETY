@@ -5,7 +5,7 @@ class StoveRtdb {
   final String serialNumber;
   final bool isRunningGUI;
   final String fcmToken;
-  final String timeOff;
+  final int timeOff;
   final bool isRunningEsp;
   final double temperature;
 

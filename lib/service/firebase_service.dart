@@ -71,7 +71,7 @@ class FirebaseFunction {
 
   Future<void> updateStoveStatus(
       String email, bool sstatus, String serialNums) async {
-        print('r');
+    print('r');
     final refs = dataRef.ref().child('stove').child(serialNums);
     await fire.collection('user').doc(email).update({"stoveStatus": sstatus});
     await refs.update({
@@ -84,20 +84,35 @@ class FirebaseFunction {
 
   int getStringToInt(String input) {
     switch (input) {
-      case "10 menit":
-        return 1;
-      case "20 menit":
-        return 2;
-      case "30 menit":
-        return 3;
-      case "40 menit":
-        return 4;
+      case "1 minutes":
+        return 60000;
+      case "5 minutes":
+        return 300000;
+      case "10 minutes":
+        return 600000;
+      case "20 minutes":
+        return 1200000;
       default:
-        return 1;
+        return 60000;
     }
   }
 
-  Future<void> updateTimerOff(String serialNumber, String inputStr) async {
+  String fetchToString(int inp) {
+    switch (inp) {
+      case 60000:
+        return "1 minutes";
+      case 300000:
+        return "5 minutes";
+      case 600000:
+        return "10 minutes";
+      case 1200000:
+        return "20 minutes";
+      default:
+        return "1 minutes";
+    }
+  }
+
+  Future<void> updateTimerOff(String serialNumber, int inputStr) async {
     final refd = dataRef.ref().child('stove').child(serialNumber);
     await refd.update({"timeOff": inputStr, "notifCondition": 3});
     print('success input timer');
