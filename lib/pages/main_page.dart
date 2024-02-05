@@ -252,9 +252,9 @@ class MainPage extends ConsumerWidget {
                                   top: size.height * 0.05,
                                   child: SizedBox(
                                     width: size.width * 0.12,
-                                    child: Image.asset('images/klk.png'),
+                                    child: Image.asset('images/temperature.png'),
                                   )),
-                              Colors.blueAccent,
+                              Colors.blueGrey[300]!,
                               Row(
                                 children: [
                                   Text(

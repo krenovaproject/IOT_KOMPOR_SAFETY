@@ -97,15 +97,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ],
             ),
             widgetUse.buttonWidgets.signInButton('LOGIN', () {
-              Future.delayed(const Duration(milliseconds: 500)).then((value) {
-                fireFunction.fireFunction
-                    .signInEmail(controlemail.text, controlpass.text, ref,
-                        controlSerialLog.text)
-                    .then((value) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (_) => const MainPage()));
+              if (controlemail.text != '' &&
+                  controlSerialLog.text != '') {
+                Future.delayed(const Duration(milliseconds: 500)).then((value) {
+                  fireFunction.fireFunction
+                      .signInEmail(controlemail.text, controlpass.text, ref,
+                          controlSerialLog.text, context);
                 });
-              });
+              } else {
+                widgetUse.mainWidgets.showTheToast("invalid text in form", "try login with your account", context);
+              }
             }, size)
           ],
         ),

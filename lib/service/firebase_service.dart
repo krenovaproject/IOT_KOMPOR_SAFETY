@@ -11,7 +11,10 @@ import 'package:kompor_safety/notifier/stream_notifier.dart';
 import 'package:kompor_safety/notifier/temporary_notifier.dart';
 import 'package:kompor_safety/notifier/user_notifier.dart';
 import 'package:kompor_safety/pages/entry_page.dart';
+import 'package:kompor_safety/widgets/main_widget.dart';
+// import 'package:toastification/toastification.dart';
 import '../model/user_fire.dart';
+import '../pages/main_page.dart';
 import 'messaging_service.dart';
 
 class FirebaseFunction {
@@ -20,14 +23,62 @@ class FirebaseFunction {
   FirebaseDatabase dataRef = FirebaseDatabase.instance;
 
   //Auth Function
-  Future<void> signInEmail(
-      String email, String pass, WidgetRef ref, String serial) async {
-    ref.read(userNotifier.notifier).setUser(email);
-    ref.read(tempNotifier.notifier).setSerialNumber(serial);
-    var printUser = ref.watch(userNotifier);
-    print('success login as $printUser');
-    MessagingService().theToken();
-    await auth.signInWithEmailAndPassword(email: email, password: pass);
+  Future<void> signInEmail(String email, String pass, WidgetRef ref,
+      String serial, BuildContext c) async {
+    try {
+      // ref.read(userNotifier.notifier).setUser(email);
+      // ref.read(tempNotifier.notifier).setSerialNumber(serial);
+      // var printUser = ref.watch(userNotifier);
+      // print('success login as $printUser');
+      MessagingService().theToken();
+      await auth.signInWithEmailAndPassword(email: email, password: pass).then((value) {
+        ref.read(userNotifier.notifier).setUser(email);
+      ref.read(tempNotifier.notifier).setSerialNumber(serial);
+      var printUser = ref.watch(userNotifier);
+      print('success login as $printUser');
+
+        Navigator.pushReplacement(
+            c, MaterialPageRoute(builder: (_) => const MainPage()));
+      });
+    } on FirebaseAuthException catch (error) {
+      print(error.code);
+      switch (error.code) {
+        case "":
+          print(error.code);
+          // error.code = "Anonymous accounts are not enabled";
+          // ignore: use_build_context_synchronously
+          MainWidget().showTheToast('Error Occured', "Try new Email", c);
+          break;
+        case "invalid-credential":
+          print(error.code);
+          // error.code = "Your password is too weak";
+          MainWidget()
+              .showTheToast('Invalid Credential', "Your password is wrong or incorrect Email", c);
+          break;
+        case "wrong-password":
+          print(error.code);
+          // error.code = "Your email is invalid";
+          MainWidget().showTheToast(
+              'Error Occured', "User with this email doesn't exist", c);
+          break;
+        case "user-disabled":
+          print(error.code);
+          // error = "Email is already in use  different account";
+          MainWidget().showTheToast(
+              'Error Occured', "User with this email has been disabled", c);
+          break;
+        case "too-many-requests":
+          print(error.code);
+          MainWidget().showTheToast(
+              'Error Occured', "Too many requests. Network Error", c);
+          // error = "Your email is invalid";
+          break;
+
+        default:
+          print("undefined error");
+        // error = "An undefined Error happened.";
+      }
+    }
   }
 
   Future<void> signUpEmail(UserFire data, WidgetRef ref) async {
