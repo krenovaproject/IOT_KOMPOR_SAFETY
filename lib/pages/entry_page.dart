@@ -60,6 +60,7 @@ User? user;
   Widget build(BuildContext context) {
     final streamUser = ref.watch(authUser);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: streamUser.when(data: (userLoggedIn){
         if(userLoggedIn != null){
           return const MainPage();

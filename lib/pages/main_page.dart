@@ -1,3 +1,5 @@
+import 'package:flip_card/flip_card.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kompor_safety/model/stove_rtdb.dart';
@@ -7,12 +9,14 @@ import 'package:kompor_safety/notifier/user_notifier.dart';
 import 'package:kompor_safety/pages/user_page.dart';
 import 'package:kompor_safety/presenter/fire_presenter.dart';
 import 'package:kompor_safety/presenter/widget_presenter.dart';
+// import 'dart:math' as math;
 
 class MainPage extends ConsumerWidget {
   const MainPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
+    FlipCardController controlFlip = FlipCardController();
     var scaffoldKey = GlobalKey<ScaffoldState>();
     final widgetUsed = ref.read(widgetPresenter);
     final userData = ref.watch(streamUser);
@@ -21,6 +25,7 @@ class MainPage extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         key: scaffoldKey,
         drawer: Drawer(
           width: size.width * 0.6,
@@ -52,8 +57,9 @@ class MainPage extends ConsumerWidget {
                     'user',
                     size.height * 0.022,
                   ),
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const UserPage()));
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => const UserPage()));
                   },
                 ),
                 Divider(
@@ -100,11 +106,43 @@ class MainPage extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        return scaffoldKey.currentState?.openDrawer();
+                  InkWell(
+                    onTap: () {
+                      return scaffoldKey.currentState?.openDrawer();
+                    },
+                    child: FlipCard(
+                      speed: 2000,
+                      onFlipDone: (flip) {
+                        Future.delayed(const Duration(seconds: 2))
+                            .then((value) {
+                          controlFlip.toggleCard();
+                        });
                       },
-                      icon: const Icon(Icons.menu))
+                      controller: controlFlip,
+                      autoFlipDuration: const Duration(seconds: 4),
+                      flipOnTouch: false,
+                      front: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                return scaffoldKey.currentState?.openDrawer();
+                              },
+                              icon: const Icon(Icons.menu))
+                        ],
+                      ),
+                      back: userData.when(data: (data) {
+                        return CircleAvatar(
+                          radius: size.height * 0.03,
+                          backgroundImage: NetworkImage(data.userProfilePath),
+                        );
+                      }, error: (e, r) {
+                        return Text("error");
+                      }, loading: () {
+                        return Text('load');
+                      }),
+                    ),
+                  ),
                 ],
               ),
               SizedBox(
@@ -154,12 +192,8 @@ class MainPage extends ConsumerWidget {
                     data.snapshot.value as Map<dynamic, dynamic>);
                 return Column(
                   children: [
-                    widgetUsed.mainWidgets.cardStove(
-                      size,
-                      datas.isRunningEsp,
-                      datas.stoveName,
-                      datas.serialNumber,
-                    ),
+                    widgetUsed.mainWidgets.cardStove(size, datas.isRunningEsp,
+                        datas.stoveName, datas.serialNumber, context),
                     SizedBox(
                       width: size.width,
                       height: size.height * 0.52,
@@ -181,11 +215,11 @@ class MainPage extends ConsumerWidget {
                                 left: size.width * 0.05,
                                 top: size.height * 0.05,
                                 child: SizedBox(
-                                  width: size.width * 0.2,
+                                  width: size.height * 0.16,
                                   child: Image.asset('images/click_hand.png'),
                                 ),
                               ),
-                              Colors.lightBlue,
+                              Theme.of(context).hoverColor,
                               // SizedBox()
                               Row(
                                 mainAxisAlignment:
@@ -196,86 +230,150 @@ class MainPage extends ConsumerWidget {
                                     style: TextStyle(
                                         fontSize: size.height * 0.024,
                                         fontWeight: FontWeight.w500,
-                                        color: const Color.fromARGB(
-                                            255, 238, 238, 238)),
+                                        color: Theme.of(context).focusColor),
                                   ),
                                   widgetUsed.buttonWidgets.menuButton(
-                                    txtCol: Colors.blueAccent,
+                                      txtCol: Theme.of(context).hoverColor,
                                       buttonName: 'OFF',
                                       action: () {
                                         print(ref.watch(userNotifier));
-                                        datas.isRunningEsp ? 
-                                        fireContent.fireFunction
-                                            .updateStoveStatus(
-                                                ref.watch(userNotifier),
-                                                true,
-                                                ref
-                                                    .read(tempNotifier.notifier)
-                                                    .fetchSerialNumber()) : widgetUsed.mainWidgets.showTheToast('cant turn off', 'tour stove is already off', context);
+                                        datas.isRunningEsp
+                                            ? fireContent.fireFunction
+                                                .updateStoveStatus(
+                                                    ref.watch(userNotifier),
+                                                    true,
+                                                    ref
+                                                        .read(tempNotifier
+                                                            .notifier)
+                                                        .fetchSerialNumber())
+                                            : widgetUsed.mainWidgets
+                                                .showTheToast(
+                                                    'cant turn off',
+                                                    'tour stove is already off',
+                                                    context);
                                       },
-                                      buttonColor: Colors.white,
+                                      buttonColor: Theme.of(context).focusColor,
                                       radius: size.height * 0.01,
                                       buttonWidth: size.width * 0.2,
                                       buttonHeight: size.height * 0.048)
                                 ],
-                              )),
+                              ),
+                              context),
                           widgetUsed.mainWidgets.statusCard(
                               size,
-                              'Timing Event For Safety',
+                              'Timing Event ',
                               'Get Started',
                               () {},
                               Positioned(
-                                  left: size.width * 0.05,
-                                  top: size.height * 0.05,
+                                  left: -size.width * 0.03,
+                                  top: size.height * 0.02,
                                   child: SizedBox(
-                                    width: size.width * 0.12,
-                                    child: Image.asset('images/klk.png'),
+                                    width: size.height * 0.18,
+                                    child: Image.asset('images/clj.png'),
                                   )),
-                              Colors.blueAccent,
+                              Theme.of(context).hoverColor,
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Container(
-                                    color: Colors.white,
+                                    color: Theme.of(context).focusColor,
                                     child: widgetUsed.buttonWidgets
-                                        .dropDownWidget(size, ref, fireContent.fireFunction.fetchToString(datas.timeOff)),
+                                        .dropDownWidget(
+                                            size,
+                                            ref,
+                                            fireContent.fireFunction
+                                                .fetchToString(datas.timeOff),
+                                            context),
                                   ),
                                 ],
-                              )),
+                              ),
+                              context),
                           widgetUsed.mainWidgets.statusCard(
                               size,
-                              'Inner Temperature',
+                              'Temperature',
                               '',
                               () {},
                               Positioned(
-                                  left: size.width * 0.05,
-                                  top: size.height * 0.05,
+                                  left: -size.width * 0.12,
+                                  top: size.height * 0.02,
                                   child: SizedBox(
-                                    width: size.width * 0.12,
-                                    child: Image.asset('images/temperature.png'),
+                                    height: size.height *
+                                        0.2, //   width: size.height * 0.2,
+                                    child: Transform.rotate(
+                                        // angle: math.pi / 15,
+                                        angle: 0,
+                                        child: Image.asset('images/temps.png')),
                                   )),
-                              Colors.blueGrey[300]!,
+                              Theme.of(context).hoverColor,
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    'Temperature:',
-                                    style: TextStyle(
-                                        fontSize: size.height * 0.024,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500),
+                                  SizedBox(
+                                    width: size.width * 0.14,
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      datas.temperature.toString(),
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: size.height * 0.022,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Inner Stove :",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                              fontSize: size.height * 0.022,
+                                              color:
+                                                  Theme.of(context).focusColor,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          datas.temperature.toString(),
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: size.height * 0.02,
+                                              color:
+                                                  Theme.of(context).focusColor,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.01,
+                                        ),
+                                        SizedBox(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "Status :",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        size.height * 0.02,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Theme.of(context)
+                                                        .focusColor),
+                                              ),
+                                              Text(
+                                                "Normal",
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        size.height * 0.02,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Theme.of(context)
+                                                        .focusColor),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: size.height * 0.02,
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
-                              ))
+                              ),
+                              context),
                         ],
                       ),
                     )

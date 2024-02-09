@@ -10,8 +10,7 @@ class ButtonWidget {
     "1 minutes",
     "5 minutes",
     "10 minutes",
-    "15 minutes",
-    "20 minutes"
+    "1 hours"
   ];
   Widget menuButton(
       {required String buttonName,
@@ -89,16 +88,17 @@ class ButtonWidget {
     );
   }
 
-  Widget dropDownWidget(Size size, WidgetRef red, String fetchTime) {
+  Widget dropDownWidget(Size size, WidgetRef red, String fetchTime, context) {
     final fireService = red.read(firePresenter);
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
+        // barrierColor: Theme.of(context).focusColor,
         isExpanded: true,
         hint: Text(
           'Select Item',
           style: TextStyle(
             fontSize: size.height * 0.02,
-            color: Colors.white,
+            color: Theme.of(context).focusColor,
           ),
         ),
         items: stringDrpdown
@@ -124,6 +124,7 @@ class ButtonWidget {
         },
         buttonStyleData: ButtonStyleData(
           decoration: BoxDecoration(
+            color: Theme.of(context).focusColor,
               borderRadius: BorderRadius.circular(size.height * 0.02)),
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
           height: size.height * 0.045,

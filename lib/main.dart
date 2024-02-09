@@ -8,6 +8,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:kompor_safety/model/temporary_storage.dart';
 import 'package:kompor_safety/pages/entry_page.dart';
 import 'package:kompor_safety/service/background_service.dart';
+import 'package:kompor_safety/widgets/static_color.dart';
 // import 'package:kompor_safety/service/messaging_service.dart';
 import 'firebase_options.dart';
 import 'service/messaging_service.dart';
@@ -58,6 +59,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: EntryPage());
+    return  MaterialApp(
+      theme: ThemeData(
+        cardColor: StaticColors.onMainCardColor,
+        splashColor: StaticColors.offMainCardColor,
+        focusColor: StaticColors.fontCardColor,
+        hintColor: StaticColors.offFontColor,
+        hoverColor: StaticColors.paramCardColor
+      ),
+      home: const EntryPage());
   }
 }

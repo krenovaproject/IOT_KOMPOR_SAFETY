@@ -141,10 +141,10 @@ class FirebaseFunction {
         return 5;
       case "10 minutes":
         return 10;
-      case "20 minutes":
-        return 20;
+      case "1 hours":
+        return 60;
       default:
-        return 10;
+        return 1;
     }
   }
 
@@ -156,10 +156,10 @@ class FirebaseFunction {
         return "5 minutes";
       case 10:
         return "10 minutes";
-      case 20:
-        return "20 minutes";
+      case 60:
+        return "1 hours";
       default:
-        return "10 minutes";
+        return "1 minutes";
     }
   }
 

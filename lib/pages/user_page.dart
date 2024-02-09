@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kompor_safety/model/stove_rtdb.dart';
 import 'package:kompor_safety/notifier/stream_notifier.dart';
 import 'package:kompor_safety/notifier/temporary_notifier.dart';
 import 'package:kompor_safety/notifier/user_notifier.dart';
@@ -31,6 +32,7 @@ class _UserPageState extends ConsumerState<UserPage> {
     BuildContext context,
   ) {
     final fireC = ref.read(firePresenter);
+    final streamDB = ref.watch(dataProvider);
     TextEditingController controlUser = TextEditingController();
     TextEditingController controlStove = TextEditingController();
     final streamUserData = ref.watch(streamUser);
@@ -102,16 +104,29 @@ class _UserPageState extends ConsumerState<UserPage> {
                             controlUser,
                             Icons.person,
                             'username',
-                            datas.userName,
+                            datas.userName, context
                           ),
                           SizedBox(
                             height: size.height * 0.03,
                           ),
-                          widgetUsed.mainWidgets.formEdit(
+                          streamDB.when(data: (datasR){
+                            final refQ = datasR.snapshot.value as Map<dynamic, dynamic>;
+                            final stoveNameR = StoveRtdb.fromJson(refQ);
+                            if(stoveNameR.stoveName != datas.stoveName){
+                             Future.delayed(const Duration(seconds: 1)).then((value){
+                              widgetUsed.mainWidgets.showTheToast("upsss... your stovename is changed by the last user", "try to changed your stovename", context);
+                             } ); 
+                            }
+                            return widgetUsed.mainWidgets.formEdit(
                               controlStove,
                               Icons.border_top_outlined,
                               'stove name',
-                              datas.stoveName),
+                              datas.stoveName == "" ? stoveNameR.stoveName : datas.stoveName, context);
+                          }, error: (e,r){
+                            return Text("fail when fetching data");
+                          }, loading: (){
+                            return CircularProgressIndicator();
+                          })
                         ],
                       ),
                     ),
