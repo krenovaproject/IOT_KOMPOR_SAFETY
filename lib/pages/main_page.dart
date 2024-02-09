@@ -285,7 +285,7 @@ class MainPage extends ConsumerWidget {
                 return Text(e.toString());
               }, loading: () {
                 return const Center(
-                  child: Text('loading'),
+                  child: Text('load the data'),
                 );
               }),
             ],

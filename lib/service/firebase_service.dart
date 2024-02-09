@@ -12,7 +12,6 @@ import 'package:kompor_safety/notifier/temporary_notifier.dart';
 import 'package:kompor_safety/notifier/user_notifier.dart';
 import 'package:kompor_safety/pages/entry_page.dart';
 import 'package:kompor_safety/widgets/main_widget.dart';
-// import 'package:toastification/toastification.dart';
 import '../model/user_fire.dart';
 import '../pages/main_page.dart';
 import 'messaging_service.dart';
@@ -35,6 +34,7 @@ class FirebaseFunction {
         ref.read(userNotifier.notifier).setUser(email);
       ref.read(tempNotifier.notifier).setSerialNumber(serial);
       var printUser = ref.watch(userNotifier);
+      print(ref.read(tempNotifier.notifier).fetchSerialNumber());
       print('success login as $printUser');
 
         Navigator.pushReplacement(
@@ -61,11 +61,11 @@ class FirebaseFunction {
           MainWidget().showTheToast(
               'Error Occured', "User with this email doesn't exist", c);
           break;
-        case "user-disabled":
+        case "invalid-email":
           print(error.code);
           // error = "Email is already in use  different account";
           MainWidget().showTheToast(
-              'Error Occured', "User with this email has been disabled", c);
+              'Error Occured', "try again with formatted email", c);
           break;
         case "too-many-requests":
           print(error.code);
@@ -136,30 +136,30 @@ class FirebaseFunction {
   int getStringToInt(String input) {
     switch (input) {
       case "1 minutes":
-        return 60000;
+        return 1;
       case "5 minutes":
-        return 300000;
+        return 5;
       case "10 minutes":
-        return 600000;
+        return 10;
       case "20 minutes":
-        return 1200000;
+        return 20;
       default:
-        return 60000;
+        return 10;
     }
   }
 
   String fetchToString(int inp) {
     switch (inp) {
-      case 60000:
+      case 1:
         return "1 minutes";
-      case 300000:
+      case 5:
         return "5 minutes";
-      case 600000:
+      case 10:
         return "10 minutes";
-      case 1200000:
+      case 20:
         return "20 minutes";
       default:
-        return "1 minutes";
+        return "10 minutes";
     }
   }
 

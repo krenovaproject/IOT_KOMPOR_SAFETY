@@ -44,19 +44,21 @@ class MessagingService {
 
   void createNotification(RemoteMessage message) async {
     const notifdetail = NotificationDetails(
-        android: AndroidNotificationDetails('pushnotification', "notifchannel",
+        android: AndroidNotificationDetails('notifications', "notifchannel",
             importance: Importance.max, priority: Priority.high));
-    await flp.show(Random().nextInt(100), message.notification!.title,
+    await flp.show(8, message.notification!.title,
         message.notification!.body, notifdetail);
   }
 
   void soundNotification(RemoteMessage msg) async {
     const notifdetail = NotificationDetails(
-        android: AndroidNotificationDetails('pushnotification', "notifchannel",
-            category: AndroidNotificationCategory.call,
+        android: AndroidNotificationDetails('notifications', "notifchannel",
+            // category: AndroidNotificationCategory.call,
             playSound: true,
+// vibrationPattern: ,
+enableVibration: true,
             // audioAttributesUsage: AudioAttributesUsage.notification,
-            sound: RawResourceAndroidNotificationSound("raw/ringtone"),
+            sound: RawResourceAndroidNotificationSound("ringtone"),
             importance: Importance.max,
             priority: Priority.high));
     await flp.show(Random().nextInt(100), msg.notification!.title,
